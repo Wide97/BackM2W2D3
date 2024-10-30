@@ -3,39 +3,44 @@ package marcowidesott.BackM2W2D3.services;
 import marcowidesott.BackM2W2D3.entities.Autore;
 import marcowidesott.BackM2W2D3.exceptions.NotFoundException;
 import marcowidesott.BackM2W2D3.payloads.AutorePayload;
+import marcowidesott.BackM2W2D3.repositories.AutoreRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 @Service
 public class AutoreService {
-    private List<Autore> autoreList = new ArrayList<>();
 
-    public List<Autore> findallAuthors() {
-        return this.autoreList;
+    @Autowired
+    private AutoreRepository autoreRepository;
+
+    public Page<Autore> findAll(Pageable pageable) {
+        return autoreRepository.findAll(pageable);
     }
 
     public Autore saveAuthor(AutorePayload body) {
-        Random rndm = new Random();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy");
-        LocalDate dataDiNascita = LocalDate.parse("12 08 1980", formatter);
-        Autore autore = new Autore(body.getName(), body.getSurname(), body.getEmail(), "12 - 08 - 1980");
-        autore.setId(rndm.nextLong(1, 1000));
-        this.autoreList.add(autore);
-        return autore;
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MM yyyy");
+        LocalDate dataDiNascita = LocalDate.parse(body.getDataDiNascita(), formatter);
+
+        Autore autore = new Autore(
+                body.getName(),
+                body.getSurname(),
+                body.getEmail(),
+                dataDiNascita.toString()
+        );
+
+
+        return autoreRepository.save(autore);
     }
 
     public Autore findById(Long userId) {
-        Autore found = null;
-        for (Autore autore : this.autoreList) {
-            if (autore.getId() == userId) found = autore;
-        }
-        if (found == null) throw new NotFoundException(Math.toIntExact(userId));
-        return found;
+        return autoreRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Author not found"));
     }
 }
+

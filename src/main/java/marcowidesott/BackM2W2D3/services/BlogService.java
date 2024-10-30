@@ -3,35 +3,35 @@ package marcowidesott.BackM2W2D3.services;
 import marcowidesott.BackM2W2D3.entities.Blog;
 import marcowidesott.BackM2W2D3.exceptions.NotFoundException;
 import marcowidesott.BackM2W2D3.payloads.BlogPayload;
+import marcowidesott.BackM2W2D3.repositories.BlogRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 @Service
 public class BlogService {
-    private List<Blog> listBlog = new ArrayList<>();
 
-    public List<Blog> findAllBlogs() {
-        return this.listBlog;
+    @Autowired
+    private BlogRepository blogRepository;
+
+    public Page<Blog> findAll(Pageable pageable) {
+        return blogRepository.findAll(pageable);
     }
 
     public Blog saveBlog(BlogPayload body) {
-        Random rndm = new Random();
-        Blog blog = new Blog(body.getCategoria(), body.getTitolo(), body.getContenuto(), 60);
-        blog.setId(rndm.nextLong(1, 1000));
-        this.listBlog.add(blog);
-        return blog;
-
+        Blog blog = new Blog(
+                body.getCategoria(),
+                body.getTitolo(),
+                body.getContenuto(),
+                body.getTempoLettura().byteValue()
+        );
+        
+        return blogRepository.save(blog);
     }
 
     public Blog findById(Long blogId) {
-        Blog found = null;
-        for (Blog blog : this.listBlog) {
-            if (blog.getId() == blogId) found = blog;
-        }
-        if (found == null) throw new NotFoundException(Math.toIntExact(blogId));
-        return found;
+        return blogRepository.findById(blogId)
+                .orElseThrow(() -> new NotFoundException("Blog not found"));
     }
 }
