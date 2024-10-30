@@ -28,10 +28,10 @@ public class AutoreService {
         LocalDate dataDiNascita = LocalDate.parse(body.getDataDiNascita(), formatter);
 
         Autore autore = new Autore(
-                body.getName(),
+                body.getDataDiNascita(),
                 body.getSurname(),
-                body.getEmail(),
-                dataDiNascita.toString()
+                body.getName(),
+                body.getEmail()
         );
 
 

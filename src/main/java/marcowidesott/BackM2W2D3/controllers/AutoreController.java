@@ -26,14 +26,12 @@ public class AutoreController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id,asc") String[] sort) {
 
-        // Creazione dell'oggetto Sort dinamico
         Sort.Direction direction = Sort.Direction.fromString(sort[1]);
         Sort sortOrder = Sort.by(direction, sort[0]);
 
-        // Creazione dell'oggetto Pageable
-        Pageable pageable = PageRequest.of(page, size, sortOrder);
 
-        // Recupera gli autori paginati dal servizio
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+        
         Page<Autore> autori = autoreService.findAll(pageable);
         return ResponseEntity.ok(autori);
     }
