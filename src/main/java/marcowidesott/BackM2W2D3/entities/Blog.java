@@ -1,5 +1,6 @@
 package marcowidesott.BackM2W2D3.entities;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,12 +9,18 @@ import lombok.ToString;
 @Getter
 @ToString
 public class Blog {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String categoria;
     private String titolo;
     private String cover;
     private String contenuto;
     private double tempoLettura;
+
+    @ManyToOne
+    @JoinColumn(name = "autore_id")
+    private Autore autore;
 
     public Blog(String categoria, String titolo, String contenuto, int tempoDiLettura) {
         this.categoria = categoria;

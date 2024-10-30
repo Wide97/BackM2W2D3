@@ -1,5 +1,8 @@
 package marcowidesott.BackM2W2D3.entities;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,6 +11,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Autore {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String surname;
